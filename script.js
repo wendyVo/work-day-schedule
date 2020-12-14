@@ -55,33 +55,27 @@ function renderPlanner() {
 }
 
 function init() {
-    // Get stored todos from localStorage
-    // Parsing the JSON string to an object
-    //var storedEvents = JSON.parse(localStorage.getItem("textColumn"));
-    var eventText = localStorage.getItem("textarea");
-    // If todos were retrieved from localStorage, update the todos array to it
-    if (eventText !== null) {
-        return;
-    }
-    //textColumn.textContent = eventText;
-
-    // Render todos to the DOM
     renderPlanner();
+    loadEvent();
 }
 
-$(".saveBtn").on("click", function() {
-    eventText = $(this).siblings("textarea").val();
-    alert(eventText)
-        //localStorage.setItem("events", JSON.stringify(events));
-    localStorage.setItem('eventText', JSON.stringify(eventText));
-    //console.log(eventText)
-    // var retrievedObject = localStorage.getItem('eventText');
+function loadEvent() {
+    for (var k = 0; k < localStorage.length; k++) {
+        var storageKey = localStorage.key(k);
+        if (storageKey.search("textArea-") !== -1) {
+            var textAreaIndex = storageKey.replace("textArea-", "")
+            var timeRow = $("textarea")[textAreaIndex];
+            timeRow.value = localStorage.getItem(storageKey);
+        }
+    }
+}
 
-    // console.log('retrievedObject: ', JSON.parse(retrievedObject));
+$(".saveBtn").on("click", function(event) {
 
-    //$("textatera").append(eventText);
-    //hours.push(eventText);
+    var dataRow = event.currentTarget.parentNode;
+    var dataChild = dataRow.children[1].getAttribute("data-index");
+    var eventText = $(this).siblings("textarea").val();
+    localStorage.setItem('textArea-' + dataChild, eventText);
+
     init();
-    //storeEvents();
-    renderPlanner();
 });
